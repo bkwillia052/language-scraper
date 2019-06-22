@@ -4,5 +4,9 @@
   "main": "index.js",
   "repository": "https://github.com/bkwillia052/language-scraper.git",
   "author": "bkwillia052 <bkwillia052@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "request-promise": "^4.2.4"
+  }
 }
