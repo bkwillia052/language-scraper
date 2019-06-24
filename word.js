@@ -999,7 +999,32 @@ retirement – la jubilación
 inflation – la inflación
 `;
 
-module.exports = words;
+let wordDict = {};
+
+let wordArray = words.split("\n");
+
+let spanisharray = wordArray.map(word => {
+  let vocab = word;
+
+  let sparr = vocab.split(" – ");
+
+  let spword = `${sparr[1]}`;
+
+  let filtered = spword.split(" ");
+
+  if (
+    filtered[0] === "el" ||
+    filtered[0] === "la" ||
+    filtered[0] === "los" ||
+    filtered[0] === "las"
+  ) {
+    wordDict[filtered[1]] = [];
+  } else {
+    wordDict[filtered[0]] = [];
+  }
+});
+
+module.exports = wordDict;
 
 let input0 = document.querySelector("#input-0");
 

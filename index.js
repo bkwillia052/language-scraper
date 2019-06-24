@@ -2,6 +2,7 @@ const request = require("request-promise");
 const cheerio = require("cheerio");
 
 const { JSDOM } = require("jsdom");
+const wordDict = require("./word");
 
 const document = new JSDOM(``, {
   url: "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=4",
@@ -11,7 +12,7 @@ const document = new JSDOM(``, {
 const URL = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng";
 const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
 
-(async () => {
+console.log(wordDict)(async () => {
   const response = await request(URL2);
 
   let $ = cheerio.load(response);
@@ -26,11 +27,9 @@ const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
     let translation0 = $(elem).find(".text");
     console.log(translation0.text());
 
-    let translation1 = $(elem)
-      .find(".translation > .text")
-      .prev();
+    let translation1 = translation0.text().split("\n");
 
-    console.log(translation1.text());
+    console.log(translation1);
   });
 
   //let boxes = document.querySelectorAll(".sentence-and-translations");
