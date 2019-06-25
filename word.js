@@ -1026,7 +1026,7 @@ let spanisharray = wordArray.map(word => {
 
 module.exports = wordDict;
 
-let input0 = document.querySelector("#input-0");
+/* let input0 = document.querySelector("#input-0");
 
 let input1 = document.querySelector("#input-1");
 
@@ -1053,4 +1053,4 @@ translations.forEach(div => {
     sp: translation0,
     en: translation1
   });
-});
+}); */

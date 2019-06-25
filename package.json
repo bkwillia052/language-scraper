@@ -5,11 +5,16 @@
   "repository": "https://github.com/bkwillia052/language-scraper.git",
   "author": "bkwillia052 <bkwillia052@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "jsdom": "^15.1.1",
-    "nodemon": "^1.19.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
   }
 }
