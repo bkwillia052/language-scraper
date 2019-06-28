@@ -43,7 +43,7 @@ const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
         en: translation1[2].trim()
       };
       cardData.sentences.push(translationSet);
-      //console.log(cardData);
+      console.log(cardData);
     });
     pages += 1;
     //console.log(`Next Page: ${pages}, Limit: ${limit}`);
@@ -54,3 +54,5 @@ const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
 
   //let translations = Array.from(boxes);
 })();
+
+module.exports.handler = () => {};
