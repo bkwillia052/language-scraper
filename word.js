@@ -27,7 +27,8 @@ money – el dinero
 issue – la cuestión
 part – la parte
 morning – la mañana
-guy – el chico
+`;
+/* guy – el chico
 number – el número
 job – el trabajo
 night – la noche
@@ -997,7 +998,7 @@ meat – la carne
 hold – la bodega
 retirement – la jubilación
 inflation – la inflación
-`;
+`; */
 
 let wordDict = {};
 
