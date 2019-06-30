@@ -13,6 +13,12 @@ const URL1 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng";
 const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
 (async () => {
   let wordKeys = Object.keys(wordDict);
+  let cards = []
+
+  wordKeys.map(word => {
+
+    
+  })
   let word = "congreso";
   let URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng`;
   let cardData = {
@@ -49,6 +55,7 @@ const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
     //console.log(`Next Page: ${pages}, Limit: ${limit}`);
     URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng&page=${pages}`;
   }
+  cards.push(cardData)
 
   //let boxes = document.querySelectorAll(".sentence-and-translations");
 
