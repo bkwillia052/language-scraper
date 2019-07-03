@@ -88,10 +88,10 @@ let allSentences = async () => {
               "\n\n\n\n\n\n\n===SUCCESS===================================================================================\n\n\n\n\n\n",
               
             ); */
+            resolve(returned);
           })
           .catch(err => console.log("Hoo"));
       });
-      resolve(returned);
     } catch (err) {}
   });
 };
