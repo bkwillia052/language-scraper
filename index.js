@@ -2,18 +2,21 @@ const request = require("request-promise");
 const cheerio = require("cheerio");
 
 const { JSDOM } = require("jsdom");
-const wordDict = require("./word");
+const { wordDict, translationDict } = require("./word");
 let wordKeys = Object.keys(wordDict);
+let retries = {};
 
 let sentenceFetch = async word => {
   try {
     let URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng`;
+
     let cardData = {
       word: word,
       sentences: []
     };
     let pages = 1;
-    let limit = 10;
+    let limit = 3;
+    console.log(`word inside of try ${word} \n URL: ${URL}`);
     while (limit >= pages) {
       const response = await request(URL);
 
@@ -45,15 +48,24 @@ let sentenceFetch = async word => {
     //console.log(cardData);
     return cardData;
   } catch (err) {
-    console.log("\n\n\n\n\nERROR\n\n\n\n\n\n", word);
+    /* if (err.name == "StatusCodeError") {
+      if (!retries[word]) {
+        console.log("testing");
+        retries[word] = 0;
+      }
+      retries[word] += 1;
+      if (retries[word] < 3) {
+        console.log(`Retries for ${word}: ${retries[word]}`);
+        sentenceFetch(word)
+          .then(res => {
+            console.log(`The Retry Response: ${res}\n`, res);
+          })
+          .catch(err => console.log("Hoo"));
+      } */
   }
-
-  //let boxes = document.querySelectorAll(".sentence-and-translations");
-
-  //let translations = Array.from(boxes);
 };
 
-let cards = wordKeys.map(word => {
+/* let cards = wordKeys.map(word => {
   sentenceFetch(word)
     .then(res => {
       console.log(
@@ -62,6 +74,27 @@ let cards = wordKeys.map(word => {
       );
     })
     .catch(err => console.log("Hoo"));
-});
+}); */
 
+let allSentences = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let returned = await [];
+      let array = await wordKeys.map(word => {
+        sentenceFetch(word)
+          .then(res => {
+            returned.push(res);
+            /* console.log(
+              "\n\n\n\n\n\n\n===SUCCESS===================================================================================\n\n\n\n\n\n",
+              
+            ); */
+          })
+          .catch(err => console.log("Hoo"));
+      });
+      resolve(returned);
+    } catch (err) {}
+  });
+};
+
+Promise.all([allSentences()]).then(res => console.log("FINAL RESULT", res));
 module.exports.handler = () => {};

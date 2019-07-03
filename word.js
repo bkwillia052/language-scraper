@@ -1002,6 +1002,8 @@ inflation – la inflación
 
 let wordDict = {};
 
+let translationDict = {};
+
 let wordArray = words.split("\n");
 
 let spanisharray = wordArray.map(word => {
@@ -1009,9 +1011,11 @@ let spanisharray = wordArray.map(word => {
 
   let sparr = vocab.split(" – ");
 
-  let spword = `${sparr[1]}`;
+  let enWord = sparr[0];
 
-  let filtered = spword.split(" ");
+  let spWord = `${sparr[1]}`;
+
+  let filtered = spWord.split(" ");
 
   if (
     filtered[0] === "el" ||
@@ -1020,12 +1024,19 @@ let spanisharray = wordArray.map(word => {
     filtered[0] === "las"
   ) {
     wordDict[filtered[1]] = [];
+    translationDict[filtered[1]] = enWord;
+    console.log(typeof filtered[1]);
   } else {
     wordDict[filtered[0]] = [];
+    translationDict[filtered[0]] = enWord;
+    console.log(typeof filtered[1]);
   }
 });
-
-module.exports = wordDict;
+console.log(translationDict);
+module.exports = {
+  wordDict,
+  translationDict
+};
 
 /* let input0 = document.querySelector("#input-0");
 
