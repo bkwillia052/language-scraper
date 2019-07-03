@@ -1,16 +1,8 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
 
-const { JSDOM } = require("jsdom");
 const wordDict = require("./word");
 
-const document = new JSDOM(``, {
-  url: "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=4",
-  contentType: "text/html"
-}).window.document;
-
-const URL1 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng";
-const URL2 = "https://tatoeba.org/eng/sentences/show_all_in/spa/eng?page=2";
 (async () => {
   let wordKeys = Object.keys(wordDict);
   let word = "congreso";
