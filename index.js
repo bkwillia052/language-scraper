@@ -5,7 +5,7 @@ const wordDict = require("./word");
 
 (async () => {
   let wordKeys = Object.keys(wordDict);
-  let word = "congreso";
+  let word = "cuestion";
   let URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng`;
   let cardData = {
     word: word,
