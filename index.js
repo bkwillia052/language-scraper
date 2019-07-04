@@ -23,16 +23,8 @@ const wordDict = require("./word");
       .first();
     limit = parseInt(totalNum.text());
 
-<<<<<<< HEAD
     let title = $(".sentence-and-translations").each((index, elem) => {
       let translation0 = $(elem).find(".text");
-=======
-    //console.log(`Total Pages: ${limit}`);
-    let title = $(".sentence-and-translations").each((index, elem) => {
-      //console.log(index);
-      let translation0 = $(elem).find(".text");
-      //console.log(translation0.text());
->>>>>>> f91058c978ee6fb8105c1f56e29c8fe699695f4b
 
       let translation1 = translation0.text().split("\n");
       let translationSet = {
