@@ -35,7 +35,7 @@ const wordDict = require("./word");
       console.log(cardData);
     });
     pages += 1;
-    //console.log(`Next Page: ${pages}, Limit: ${limit}`);
+
     URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng&page=${pages}`;
   }
 
