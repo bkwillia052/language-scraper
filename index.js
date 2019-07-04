@@ -1,9 +1,15 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
+//request.debug = 1;
 
 const { wordDict, translationDict } = require("./word");
 let wordKeys = Object.keys(wordDict);
+let currentLength = 0; // this is set inside of the poller interval function
 let failed = 0;
+let runs = 0;
+let retries = {};
+let returned = [];
+let failArr = {};
 
 let sentenceFetch = async word => {
   try {
@@ -17,12 +23,7 @@ let sentenceFetch = async word => {
     let limit = 3;
 
     while (limit >= pages) {
-      //console.log(word, "gobierno");
       const response = await request(URL);
-
-      if (word === "gobierno") {
-        // console.log("RESPONSE\n\n\n\n\n\n\n\n\n: ", response);
-      }
 
       let $ = cheerio.load(response);
 
@@ -41,51 +42,66 @@ let sentenceFetch = async word => {
         cardData.sentences.push(translationSet);
       });
       pages += 1;
-      //console.log(`Next Page: ${pages}, Limit: ${limit}`);
+
       URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng&page=${pages}`;
     }
 
-    //console.log("Inner:", word, cardData);
-    return JSON.stringify(cardData);
+    return cardData;
   } catch (err) {
-    //console.log("ERROR:", word);
     failed += 1;
-
-    /* if (err.name == "StatusCodeError") {
+    failArr[word] = 0;
+    if (err.name == "StatusCodeError") {
       if (!retries[word]) {
-        console.log("testing");
         retries[word] = 0;
       }
       retries[word] += 1;
       if (retries[word] < 3) {
-        console.log(`Retries for ${word}: ${retries[word]}`);
+        //console.log(`Retries for ${word}: ${retries[word]}`);
         sentenceFetch(word)
           .then(res => {
-            console.log(`The Retry Response: ${res}\n`, res);
+            if (removeFromFailed(res)) {
+              //console.log("Passed in the Retry");
+              return res;
+            } else {
+              //console.log(`Retry for ${word} failed. `);
+            }
           })
-          .catch(err => console.log("Hoo"));
-      } */
+          .catch((
+            err //console.log("Hoo")
+          ) => {});
+      }
+    }
   }
 };
-let returned = [];
+
+let removeFromFailed = res => {
+  if (res !== undefined) {
+    returned.push(JSON.stringify(res));
+    let failed = Object.keys(failArr);
+    failed.forEach(obj => {
+      if (obj === res.word) {
+        delete failArr[obj];
+        //console.log(`${res.word} removed from failed list.`);
+      }
+    });
+    return true;
+  }
+};
+
 let allSentences = new Promise(async (resolve, reject) => {
   try {
     let array = await wordKeys.map(async word => {
-      setTimeout(
-        sentenceFetch(word)
-          .then(res => {
-            returned.push(res);
-
-            console.log(
-              // NOTE: Whenever I console log the response here, which is 'cardData' in the sentenceFetch function, it will console log eventually
-              "\n\n\n\n\n\n\n===SUCCESS===\n\n\n\n\n\n",
-              returned
-            );
+      sentenceFetch(word)
+        .then(res => {
+          if (removeFromFailed(res)) {
             return res;
-          })
-          .catch(err => console.log("Hoo")),
-        2500
-      );
+          } else {
+            //console.log("Failed in the original");
+          }
+        })
+        .catch((
+          err //console.log("Hoo")
+        ) => {});
     });
     resolve(returned);
   } catch (err) {
@@ -93,32 +109,38 @@ let allSentences = new Promise(async (resolve, reject) => {
   }
 });
 
-//NOTE: The promise allways returns "undefined" even though the I can confirm via console.log in sentenceFetch.then() that an object is returned at some point
-let currentLength = 0;
-allSentences.then(res => console.log("FINAL RESULT", res));
-let poller = setInterval(() => {
-  if (currentLength < returned.length) {
-    console.log(
-      `Prev Returned Length: ${currentLength}, Current Returned Length: ${
-        returned.length
-      }`
-    );
+let ender = () => {
+  let enderInterval = setInterval(() => {
+    /* //console.log(
+      `Dict Length: ${wordKeys.length}, Failed+ Returned: ${failed +
+        returned.length}, Returned: ${returned.length}, Runs: ${runs}`
+    ); */
+    runs += 1;
     returned = returned.filter(thing => typeof thing !== "undefined");
     currentLength = returned.length;
-  } else {
-    console.log(returned);
-    clearInterval(poller);
-  }
-}, 15000);
-let runs = 0;
-let ender = setInterval(() => {
-  console.log(wordKeys.length, failed + returned.length);
-  runs += 1;
 
-  /* if (wordKeys.length === failed + returned.length) {
-    clearInterval(poller);
-    clearInterval(ender);
-    console.log("Returned Length:", returned.length);
-  } */
-}, 1000);
+    if (runs > 40) {
+      //console.log("Returned Length:", returned.length);
+      //console.log("Returned:", returned);
+      //console.log("Failed", failArr);
+      clearInterval(enderInterval);
+      wordKeys = Object.keys(failArr);
+      console.log(returned);
+      return returned;
+    }
+  }, 1000);
+};
+
+const wholething = async () => {
+  allSentences.then(res => {});
+
+  try {
+    let thing = await ender();
+    await console.log(`THING: ${thing}`);
+    return thing;
+  } catch (err) {}
+};
+
+wholething();
+
 module.exports.handler = () => {};
