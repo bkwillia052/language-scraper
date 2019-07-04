@@ -10,7 +10,7 @@ lot – el lote
 woman – la mujer
 country – el país
 life – la vida
-question – la cuestión
+question – la cuestion
 president – el presidente
 child – el niño
 week – la semana
@@ -27,8 +27,7 @@ money – el dinero
 issue – la cuestión
 part – la parte
 morning – la mañana
-`;
-/* guy – el chico
+guy – el chico
 number – el número
 job – el trabajo
 night – la noche
@@ -464,7 +463,8 @@ writer – el escritor
 emergency – la emergencia
 growth – el crecimiento
 bed – la cama
-welfare – el bienestar
+`;
+/*welfare – el bienestar
 adult – el adulto
 faith – la fe
 proposal – la propuesta
