@@ -11,8 +11,8 @@ let retries = {};
 let returned = [];
 let failArr = {};
 
-let sentenceFetch = async word => {
-  try {
+let sentenceFetch = word => {
+  return new Promise(async (resolve, reject) => {
     let URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng`;
 
     let cardData = {
@@ -45,33 +45,13 @@ let sentenceFetch = async word => {
 
       URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng&page=${pages}`;
     }
-
-    return cardData;
-  } catch (err) {
-    failed += 1;
-    failArr[word] = 0;
-    if (err.name == "StatusCodeError") {
-      if (!retries[word]) {
-        retries[word] = 0;
-      }
-      retries[word] += 1;
-      if (retries[word] < 3) {
-        //console.log(`Retries for ${word}: ${retries[word]}`);
-        sentenceFetch(word)
-          .then(res => {
-            if (removeFromFailed(res)) {
-              //console.log("Passed in the Retry");
-              return res;
-            } else {
-              //console.log(`Retry for ${word} failed. `);
-            }
-          })
-          .catch((
-            err //console.log("Hoo")
-          ) => {});
-      }
+    if (cardData) {
+      console.log(cardData);
+      resolve(cardData);
+    } else {
+      reject("Error occured");
     }
-  }
+  });
 };
 
 let removeFromFailed = res => {
@@ -132,13 +112,7 @@ let ender = () => {
 };
 
 const wholething = async () => {
-  allSentences.then(res => {});
-
-  try {
-    let thing = await ender();
-    await console.log(`THING: ${thing}`);
-    return thing;
-  } catch (err) {}
+  allSentences.then(res => console.log(res));
 };
 
 wholething();
