@@ -1,7 +1,6 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
 
-const { JSDOM } = require("jsdom");
 const wordDict = require("./word");
 let wordKeys = Object.keys(wordDict);
 
@@ -46,6 +45,7 @@ let sentenceFetch = async word => {
     return cardData;
   } catch (err) {
     console.log("\n\n\n\n\nERROR\n\n\n\n\n\n", word);
+
   }
 
   //let boxes = document.querySelectorAll(".sentence-and-translations");
