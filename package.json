@@ -12,7 +12,8 @@
     "cheerio": "^1.0.0-rc.3",
     "jsdom": "^15.1.1",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

@@ -8,7 +8,7 @@ man – el hombre
 state – el estado 
 lot – el lote
 woman – la mujer
-country – el país
+country – el país;
 life – la vida
 question – la cuestión
 president – el presidente
@@ -26,7 +26,7 @@ government – el gobierno
 money – el dinero
 issue – la cuestión
 part – la parte
-morning – la mañana`;
+tomorrow – la mañana`;
 /*guy – el chico
 number – el número
 job – el trabajo
@@ -1023,12 +1023,22 @@ let spanisharray = wordArray.map(word => {
     filtered[0] === "las"
   ) {
     wordDict[filtered[1]] = [];
-    translationDict[filtered[1]] = enWord;
-    console.log(typeof filtered[1]);
+    if (translationDict[filtered[1]]) {
+      translationDict[filtered[1]] = `${
+        translationDict[filtered[1]]
+      }, ${enWord}`;
+    } else {
+      translationDict[filtered[1]] = enWord;
+    }
   } else {
     wordDict[filtered[0]] = [];
-    translationDict[filtered[0]] = enWord;
-    console.log(typeof filtered[1]);
+    if (translationDict[filtered[0]]) {
+      translationDict[filtered[0]] = `${
+        translationDict[filtered[1]]
+      }, ${enWord}`;
+    } else {
+      translationDict[filtered[0]] = enWord;
+    }
   }
 });
 console.log(translationDict);

@@ -1,5 +1,6 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
+const utf8 = require("utf8");
 //request.debug = 1;
 
 const { wordDict, translationDict } = require("./word");
@@ -10,45 +11,49 @@ let runs = 0;
 let retries = {};
 let returned = [];
 let failArr = {};
+let start = Date.now();
 
+console.log(`Start Time: ${start}`);
 let sentenceFetch = async word => {
   try {
-    let URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng`;
+    let newWord = utf8.encode(word);
+    let URL = `https://tatoeba.org/eng/sentences/search?query=${newWord}&from=spa&to=eng`;
 
     let cardData = {
       word: word,
+      translation: translationDict[word],
       sentences: []
     };
-    let pages = 1;
-    let limit = 3;
 
-    while (limit >= pages) {
-      const response = await request(URL);
-
-      let $ = cheerio.load(response);
-
-      let totalNum = $(".paging")
-        .find("li:nth-last-child(2) > a")
-        .first();
-
-      let title = $(".sentence-and-translations").each((index, elem) => {
-        let translation0 = $(elem).find(".text");
-
-        let translation1 = translation0.text().split("\n");
-        let translationSet = {
-          sp: translation1[1].trim(),
-          en: translation1[2].trim()
-        };
-        cardData.sentences.push(translationSet);
-      });
-      pages += 1;
-
-      URL = `https://tatoeba.org/eng/sentences/search?query=${word}&from=spa&to=eng&page=${pages}`;
+    const response = await request(URL);
+    console.log(`${word} response at ${Date.now() - start}`);
+    if (word === "mañana") {
+      console.log(response);
     }
+    let $ = cheerio.load(response);
 
-    return cardData;
+    let totalNum = $(".paging")
+      .find("li:nth-last-child(2) > a")
+      .first();
+
+    let title = $(".sentence-and-translations").each((index, elem) => {
+      let translation0 = $(elem).find(".text");
+
+      let translation1 = translation0.text().split("\n");
+      let translationSet = {
+        sp: translation1[1].trim(),
+        en: translation1[2].trim()
+      };
+      cardData.sentences.push(translationSet);
+    });
+
+    return JSON.stringify(cardData);
   } catch (err) {
-    failed += 1;
+    console.log(`${word} failed`);
+    let newCardData = await sentenceFetch(word);
+    return newCardData;
+    /* failed += 1;
+
     failArr[word] = 0;
     if (err.name == "StatusCodeError") {
       if (!retries[word]) {
@@ -70,7 +75,7 @@ let sentenceFetch = async word => {
             err //console.log("Hoo")
           ) => {});
       }
-    }
+    } */
   }
 };
 
@@ -105,42 +110,23 @@ let allSentences = new Promise(async (resolve, reject) => {
     });
     resolve(returned);
   } catch (err) {
-    reject("Failure");
+    reject("Failure.");
   }
 });
 
-let ender = () => {
-  let enderInterval = setInterval(() => {
-    /* //console.log(
-      `Dict Length: ${wordKeys.length}, Failed+ Returned: ${failed +
-        returned.length}, Returned: ${returned.length}, Runs: ${runs}`
-    ); */
-    runs += 1;
-    returned = returned.filter(thing => typeof thing !== "undefined");
-    currentLength = returned.length;
+let allProms = [];
+for (let i = 0; i < wordKeys.length; i++) {
+  allProms.push(
+    sentenceFetch(wordKeys[i]).catch(err => allProms.push(sentenceFetch(err)))
+  );
+}
 
-    if (runs > 40) {
-      //console.log("Returned Length:", returned.length);
-      //console.log("Returned:", returned);
-      //console.log("Failed", failArr);
-      clearInterval(enderInterval);
-      wordKeys = Object.keys(failArr);
-      console.log(returned);
-      return returned;
-    }
-  }, 1000);
-};
+Promise.all(allProms)
+  .then(res => res.forEach(thing => console.log(`\n\nSuccess: ${thing}\n\n`)))
+  .catch(err => console.log(failed));
 
-const wholething = async () => {
-  allSentences.then(res => {});
-
-  try {
-    let thing = await ender();
-    await console.log(`THING: ${thing}`);
-    return thing;
-  } catch (err) {}
-};
-
-wholething();
+/* while (true) {
+  console.log(ally.next());
+} */
 
 module.exports.handler = () => {};
