@@ -3,7 +3,9 @@ const cheerio = require("cheerio");
 const utf8 = require("utf8");
 //request.debug = 1;
 
+
 const { wordDict, translationDict } = require("./word");
+
 let wordKeys = Object.keys(wordDict);
 let currentLength = 0; // this is set inside of the poller interval function
 let failed = 0;
@@ -49,10 +51,12 @@ let sentenceFetch = async word => {
 
     return JSON.stringify(cardData);
   } catch (err) {
+
     console.log(`${word} failed`);
     let newCardData = await sentenceFetch(word);
     return newCardData;
     /* failed += 1;
+
 
     failArr[word] = 0;
     if (err.name == "StatusCodeError") {
